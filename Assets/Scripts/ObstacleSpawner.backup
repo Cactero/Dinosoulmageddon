@@ -1,0 +1,51 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ObstacleSpawner : MonoBehaviour
+{
+    public GameObject original;
+    public Transform spawnpoint;
+    public Transform target;
+    public Camera cam;
+    public GameObject clone;
+    GameObject[] obstacles;
+    public float height;
+    public bool seen = false;
+
+    void Start () 
+    {
+        cam = Camera.main;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        Vector3 viewPos = cam.WorldToViewportPoint(target.position);
+
+        if (target != null)
+        {
+            if (viewPos.x >= 1.1F && !seen) //Outside cam on right side
+            {
+               GameObject clone = Instantiate(original, new Vector3(spawnpoint.position.x, spawnpoint.position.y, spawnpoint.position.z), Quaternion.identity);
+            }
+
+            else if (-0.1F <= viewPos.x && viewPos.x <= 1.1F) //On cam
+            {
+                seen = true;
+            }
+
+            else if (viewPos.x <= -0.1F && seen) //Outside cam on left side
+            {
+                Destroy(clone,1f);
+                seen = false;
+                
+            }
+        }
+
+        else
+        {
+            return;
+        }    
+    }
+}
